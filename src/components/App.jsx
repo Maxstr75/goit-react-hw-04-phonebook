@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import ContactForm from 'components/ContactForm/ContactForm';
 import ContactList from 'components/ContactList/ContactList';
@@ -12,29 +12,26 @@ export function App() {
     { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
     { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
   ]);
-    
-  const [filter, setFilter] = useState('');
-  
-  // Проверка localStorage на наличие контактов
-  
 
-  componentDidMount() {
-    const contacts = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contacts);
+  const [filter, setFilter] = useState('');
+
+  // Проверка localStorage на наличие контактов
+
+  useEffect(() => {
+    const contactsStorage = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contactsStorage);
 
     if (parsedContacts) {
-      this.setState({ contacts: parsedContacts });
+      setContacts(parsedContacts);
+    } else {
+      return;
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps, prevState) {
-    const nextContacts = this.state.contacts;
-    const prevContacts = prevState.contacts;
-
-    if (nextContacts !== prevContacts) {
-      localStorage.setItem('contacts', JSON.stringify(nextContacts));
-    }
-  }
+  // запись контакта в localStorage
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
   // Добавляет контакт в список
   const addContact = ({ name, number }) => {
@@ -46,9 +43,7 @@ export function App() {
       return alert(`${name} is already in contacts.`);
     }
 
-    const findNumber = contacts.find(
-      contact => contact.number === number
-    );
+    const findNumber = contacts.find(contact => contact.number === number);
     if (findNumber) {
       return alert(`This phone number is already in use.`);
     }
@@ -77,9 +72,9 @@ export function App() {
   const visibleContacts = filterContacts();
 
   // Удаляет контакт из списка
- const deleteContact = contactId => {
-    setContacts(contacts => 
-      contacts.filter(contact => contact.id !== contactId),
+  const deleteContact = contactId => {
+    setContacts(contacts =>
+      contacts.filter(contact => contact.id !== contactId)
     );
   };
 
@@ -87,21 +82,20 @@ export function App() {
     setFilter(event.currentTarget);
   };
 
-  
-    return (
-      <Container>
-        <Section title="Phonebook">
-          <TitleH1>Phonebook</TitleH1>
-          <ContactForm onSubmit={addContact} />
-        </Section>
-        <Section title="Contacts">
-          <TitleH2>Contacts</TitleH2>
-          <Filter value={filter} onChange={handleFilter} />
-          <ContactList
-            contacts={visibleContacts}
-            onDeleteContact={deleteContact}
-          />
-        </Section>
-      </Container>
-    );
+  return (
+    <Container>
+      <Section title="Phonebook">
+        <TitleH1>Phonebook</TitleH1>
+        <ContactForm onSubmit={addContact} />
+      </Section>
+      <Section title="Contacts">
+        <TitleH2>Contacts</TitleH2>
+        <Filter value={filter} onChange={handleFilter} />
+        <ContactList
+          contacts={visibleContacts}
+          onDeleteContact={deleteContact}
+        />
+      </Section>
+    </Container>
+  );
 }
