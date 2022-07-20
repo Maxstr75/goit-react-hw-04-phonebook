@@ -18,7 +18,7 @@ export function App() {
 
   useEffect(() => {
     // const contactsStorage = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
+    const parsedContacts = JSON.parse(window.localStorage.getItem('contacts'));
 
     if (parsedContacts) {
       setContacts(parsedContacts);
@@ -29,7 +29,7 @@ export function App() {
 
   // запись контакта в localStorage
   useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
   }, [contacts]);
 
   // Добавляет контакт в список
