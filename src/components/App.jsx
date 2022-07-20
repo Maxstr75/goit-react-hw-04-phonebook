@@ -17,8 +17,8 @@ export function App() {
   // Проверка localStorage на наличие контактов
 
   useEffect(() => {
-    const contactsStorage = localStorage.getItem('contacts');
-    const parsedContacts = JSON.parse(contactsStorage);
+    // const contactsStorage = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
 
     if (parsedContacts) {
       setContacts(parsedContacts);
